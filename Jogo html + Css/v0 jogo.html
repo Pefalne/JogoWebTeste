@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Minha Engine</title>
+        <style>
+            canvas {
+                    position: absolute;
+                    top: 0px;
+                    bottom: 0px;
+                    left: 0px;
+                    right: 0px;
+                    margin: auto;
+            }
+        </style>
+    </head>
+
+    <body>
+        <script>
+            //variáveis do jogo
+            var canvas, ctx, ALTURA, LARGURA, frames = 0;
+
+            function clique(event) {
+                alert("clicou aqui!")
+            }
+
+            function main() {
+                ALTURA = window.innerHeight;
+                ALRGURA = window.innerWidth;
+                
+                if (LARGURA >= 600) {
+                    LARGURA = 600;
+                    ALTURA = 600;
+                }
+                
+                canvas = document.createElemente("canvas");
+                canvas.width = LARGURA;
+                canvas.heigth = ALTURA;
+                canvas.style.border = "1px solid #000";
+
+
+                ctx = canvas.getContext("2d");
+                document.body.appendChild(canvas);
+                document.addEventListener("mousedown", clique);
+
+            }
+
+            function roda() {}
+
+            function atualiza() {}
+
+            function desenha() {}
+
+            //inicializa o jogo
+            main ();
+        </script>
+    </body>
+
+</html>

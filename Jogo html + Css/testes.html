@@ -1,0 +1,420 @@
+D3D3D3<!DOCTYPE html>
+
+<html>
+
+	<head>
+
+		<meta charset="utf-8">
+
+		<title>Minha Engine</title>
+
+
+
+		<style type="text/css">
+
+
+
+			/*centralizando o canvas na tela*/
+
+			canvas {
+
+				position: absolute;
+
+				top: 0px;
+
+				bottom:  0px;
+
+				left:  0px;
+
+				right: 0px;
+
+				margin:  auto;
+
+			}
+
+
+
+		</style>
+
+
+
+	</head>
+
+
+
+	<body>
+
+
+
+		<script>
+
+			//variaveis do jogo 
+
+			var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3, velocidade =6,
+
+
+
+			//definindo a variavel chao separadamente 
+
+			chao = {
+
+
+
+				//definindo a possição em relação ao eixo Y 
+
+				y: 550,
+
+
+
+				//definindo altura 
+
+				altura: 50,
+
+
+
+				//definindo a cor 
+
+				cor: "#4e4e4e",
+
+
+
+				//cliando a função desenha dentro de chão 
+
+				desenha: function(){
+
+
+
+					//mudando a cor 
+
+					ctx.fillStyle = this.cor; 
+
+
+
+					//desenhando na tela 
+
+					ctx.fillRect(0, this.y, LARGURA, this.altura); 
+
+				}
+
+			},
+
+
+
+			//definindo a variavel bloco separadamente
+
+
+
+			bloco = {
+
+				//iniciando o bloco na posição 50 em X
+
+				x: 50, 
+
+
+
+				//iniciando o bloco na posição 0
+
+				y: 0, 
+
+
+
+				//definindo altura do bloco 
+
+				altura: 50,
+
+
+
+				//definindo largura do bloco
+
+				largura: 50,
+
+
+
+				//definindo a cor do bloco 
+
+				cor: "#000",
+
+
+
+				//declarando a gravidade do bloco
+
+				gravidade: 1.6,
+
+
+
+				//declarando a velocidade
+
+				velocidade: 0,
+
+
+
+				//declarando força do pulo
+
+				forcaDoPulo: 23.6,
+
+
+
+				//pulos
+
+				qtdPulos: 0,
+
+
+
+				//atualização do bloco 
+
+				atualiza: function() {
+
+
+
+					//declarando a velocidade
+
+					this.velocidade += this.gravidade;
+
+					this.y += this.velocidade;
+
+
+
+					//fixando o bloco no chão da canvas
+
+					if (this.y > chao.y - this.altura) {
+
+						this.y = chao.y - this.altura;
+
+						this.qtdPulos = 0;
+
+					}
+
+				},
+
+
+
+				//declarando condição para pular 
+
+				pula: function() {
+
+					if (this.qtdPulos < maxPulos) { //pula apenas se a qtdPulos for menor que maxPulos
+
+						this.velocidade = -this.forcaDoPulo;
+
+						this.qtdPulos++;		
+
+					}		
+
+				},
+
+
+
+				//desenhando bloco
+
+				desenha: function() {
+
+					ctx.fillStyle = this.cor;
+
+					ctx.fillRect(this.x, this.y, this.largura, this.altura);
+
+				}
+
+ 
+
+			},
+
+
+
+			 obstaculos = {
+
+				_obs: [],
+
+				_cores: ["#1C1C1C","#363636","#4F4F4F","#696969","#808080"],
+
+
+
+				insere: function() {
+
+					this._obs.push ({
+
+						x: LARGURA,
+
+						largura: 30 + Math.floor(20 * Math.random()),
+
+						altura: 30 + Math.floor(120 * Math.random()),
+
+						cor: this._cores[Math.floor(5 * Math.random())]
+
+					})
+
+				},
+
+
+
+				atualiza: function () {
+                    for (var i=0, ram = this._obs.length; i < tam; i++) {
+                        var obs = this._obs[i];
+
+                        ob.x -= velocidade;
+                    }
+				},
+
+
+
+				desenha: function () {
+
+					for (var i = 0, tam = this._obs.length; i < tam; i++){
+
+						var obs = this._obs[i]; //selecionando o elemento que sera desenhado 
+
+						ctx.fillStyle = obs.cor;
+
+						ctx.fillRect(obs.x, chao.y - obs.altura, obs.largura, obs.altura);
+
+					}
+
+				}
+
+
+
+			};
+
+
+
+			//se a pessoa clicou, sera executado (bloco - pula) 
+
+			function clique(event) { 
+
+				bloco.pula();
+
+
+
+			} 
+
+
+
+			function main() {
+
+
+
+				//recebe a altura da janela do usuario 
+
+				ALTURA = window.innerHeight; 
+
+
+
+				//recebe a larguda da janela do usuario 
+
+				LARGURA = window.innerWidth; 
+
+
+
+				if (LARGURA >= 500) {
+
+					LARGURA = 600;
+
+					ALTURA = 600;
+
+				}
+
+
+
+				//criando o canvas 
+
+				canvas = document.createElement("canvas"); 
+
+					canvas.width = LARGURA;
+
+					canvas.height = ALTURA;
+
+				//borda do canvas - sintaxe (tamanho tipo cor)
+
+					canvas.style.border = "1px solid #000"; 
+
+
+
+				//criando contesto - deixando o mesmo como 2d
+
+				ctx = canvas.getContext("2d");
+
+
+
+				//adicionando a canvas no html
+
+				document.body.appendChild(canvas);
+
+
+
+				//verificando se a pessoa clicou, sempre quando clicar, vai executavar a função clique
+
+				document.addEventListener("mousedown", clique);
+
+
+
+				roda(); //loop do jogo
+
+
+
+			}
+
+
+
+			//loop que ficara atualizando e desenhando na canvas
+
+			function roda() {
+
+				atualiza();
+
+				desenha();
+
+
+
+				//vai atualizar e desenhar a função roda
+
+				window.requestAnimationFrame(roda);
+
+			} 
+
+
+
+			//atualiza o status do personagem e bloco
+
+			function atualiza() {
+
+				frames++;
+
+
+
+				bloco.atualiza();
+                obstaculos.atualiza();
+
+			} 
+
+
+
+			//desenha o personagem, blocos, chão etc..
+
+			function desenha() {
+
+				ctx.fillStyle = "#D3D3D3"; //definindo a cor do tabuleiro
+
+				ctx.fillRect(0, 0, LARGURA, ALTURA);
+
+
+
+				//desenhando chao e bloco
+
+				chao.desenha(); 
+
+				obstaculos.desenha();
+
+				bloco.desenha();
+
+			} 
+
+
+
+			//inicializa o jogo
+
+			main(); 
+
+		</script>
+
+	</body>
+
+</html>
